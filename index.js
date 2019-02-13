@@ -1,3 +1,4 @@
+require('dotenv').config();
 const { Client, RichEmbed } = require('discord.js');
 const Parser = require('rss-parser');
 const schedule = require('node-schedule');
@@ -12,7 +13,7 @@ let last_updated = new Date().toISOString();
 
 const fetch_and_update_feed = async () => {
   let feed = await rss_parser.parseURL('https://www.reddit.com/r/mechmarket/new/.rss');
-  console.log(Date.now(), 'Updating-', feed.title);
+  console.log(Date.now(), feed.title);
   const entries = feed.items
     .filter((entry) => entry.isoDate > last_updated)
     .reverse();
