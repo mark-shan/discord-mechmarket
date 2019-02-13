@@ -1,0 +1,27 @@
+{
+  "name": "discord-rss",
+  "version": "0.0.1",
+  "description": "discord rss updates",
+  "main": "bot.js",
+  "dependencies": {
+    "bufferutil": "^4.0.1",
+    "discord.js": "^11.4.2",
+    "node-schedule": "^1.3.1",
+    "rss-parser": "^3.6.2"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mark-shan/discord-rss.git"
+  },
+  "keywords": [],
+  "author": "Mark Shan",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mark-shan/discord-rss/issues"
+  },
+  "homepage": "https://github.com/mark-shan/discord-rss#readme"
+}
