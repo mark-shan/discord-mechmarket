@@ -13,7 +13,7 @@ let last_updated = new Date().toISOString();
 
 const fetch_and_update_feed = async () => {
   let feed = await rss_parser.parseURL('https://www.reddit.com/r/mechmarket/new/.rss');
-  console.log(Date.now(), feed.title);
+  console.log(last_updated, Date.now(), feed.title);
   const entries = feed.items
     .filter((entry) => entry.isoDate > last_updated)
     .reverse();
@@ -24,7 +24,7 @@ const fetch_and_update_feed = async () => {
   for (entry of entries) {
     const message = entry.title + ' ' + entry.link
     discord_client.channels.get(channel_id).send(message);
-    last_updated = entry.time;
+    last_updated = entry.isoDate;
   }
 };
 
@@ -37,6 +37,9 @@ discord_client.on('ready', () => {
 discord_client.on('message', message => {
   if ('!update' == message.content) {
     fetch_and_update_feed();
+  }
+  else if ('!test' == message.content) {
+    discord_client.channels.get(channel_id).send("<@" + message.author.id + ">");
   }
 });
 
