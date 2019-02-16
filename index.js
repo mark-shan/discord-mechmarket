@@ -1,6 +1,6 @@
 require('dotenv').config();
 const { Client } = require('discord.js');
-const Parser = require('rss-parser');
+const request = require('request-promise');
 const schedule = require('node-schedule');
 
 const sendMessage = require('./send-message');
@@ -9,21 +9,32 @@ const bot_token = process.env.BOT_TOKEN;
 const channel_id = process.env.CHANNEL_ID;
 
 const discord_client = new Client();
-const rss_parser = new Parser();
 
-let last_updated = new Date(2000).toISOString();
+let last_updated = 0;
 
+const pick_json_fields = ({author, created_utc, selftext, title, url}) => ({author, created_utc, selftext, title, url});
 const fetch_and_update_feed = async () => {
-  let feed = await rss_parser.parseURL('https://www.reddit.com/r/mechmarket/new/.rss');
-  console.log(last_updated, new Date().toISOString(), feed.title);
-  const entries = feed.items
-    .filter((entry) => entry.isoDate > last_updated)
+  const options = {
+    uri: 'https://www.reddit.com/r/mechmarket/new/.json',
+    headers: {
+      'User-Agent': 'Request-Promise'
+    },
+    json: true,
+  };
+  let res = await request(options);
+
+  console.log("Last Updated:", new Date(1000 * last_updated).toISOString());
+  console.log("Now:", new Date().toISOString());
+
+  const entries = res.data.children
+    .map((entry) => pick_json_fields(entry.data))    
+    .filter((entry) => entry.created_utc > last_updated)
     .reverse();
   console.log('Entries: ', entries.length);
 
   for (entry of entries) {
     sendMessage(discord_client.channels.get(channel_id), entry);
-    last_updated = entry.isoDate;
+    last_updated = entry.created_utc;
     console.log(entry.title);
   }
 };
