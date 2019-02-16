@@ -10,7 +10,7 @@ const sendMessage = (channel, entry) => {
     .setDescription(entry.url)
     .setTimestamp(new Date(entry.created_utc * 1000));
 
-  const strlen = entry.selftext.substring(0, MAX_EMBED_LEN).length;
+  const strlen = entry.selftext.trim().substring(0, MAX_EMBED_LEN).length;
   for (let i = 0; i < strlen; i += MAX_FIELD_LEN) {
     message.addField(".", entry.selftext.substring(i, i + MAX_FIELD_LEN), true);
   }
