@@ -1,1 +1,1 @@
-# discord-rss
+# discord-mechmarket

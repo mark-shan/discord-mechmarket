@@ -1,26 +1,20 @@
-const { parse } = require('node-html-parser');
+const { RichEmbed } = require('discord.js');
 
 const sendMessage = (channel, entry) => {
-  const HREF_LINK = /href="(.*)"/;
-  const IS_URL = /http/;
-  const links = parse(entry.content)
-    .firstChild
-    .querySelectorAll('a')
-    .reduce((accumulator, element) => {
-      const attrs = element.rawAttrs.split(' ');
-      attrs.forEach((attr) => {
-        const matches = attr.match(HREF_LINK);
-        if (matches) {
-          const url = matches[1];
-          if (IS_URL.test(url)) accumulator.push(matches[1]);
-        }
-      });
-      return accumulator;
-    },
-    [])
-    .slice(0,3);
+  const MAX_EMBED_LEN = 5500;
+  const MAX_FIELD_LEN = 1000;
 
-  channel.send(entry.title + '\n' + entry.link + '\n' + links.join(' - '));
+  const message = new RichEmbed()
+    .setTitle(entry.title)
+    .setAuthor(entry.author)
+    .setDescription(entry.url)
+    .setTimestamp(new Date(entry.created_utc * 1000));
+
+  const strlen = entry.selftext.substring(0, MAX_EMBED_LEN).length;
+  for (let i = 0; i < strlen; i += MAX_FIELD_LEN) {
+    message.addField(".", entry.selftext.substring(i, i + MAX_FIELD_LEN), true);
+  }
+  channel.send(message);
 }
 
 module.exports = sendMessage;
