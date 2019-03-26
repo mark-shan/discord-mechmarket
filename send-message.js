@@ -5,16 +5,9 @@ const sendMessage = (channel, entry) => {
   const MAX_TITLE_LEN = 250;
   const MAX_FIELD_LEN = 1000;
 
-  const message = new RichEmbed()
-    .setTitle(entry.title.substring(0, MAX_TITLE_LEN))
-    .setAuthor(entry.author)
-    .setDescription(entry.url)
-    .setTimestamp(new Date(entry.created_utc * 1000));
+  const message = 
+    entry.title + " " + entry.url;
 
-  const strlen = entry.selftext.trim().substring(0, MAX_EMBED_LEN).length;
-  for (let i = 0; i < strlen; i += MAX_FIELD_LEN) {
-    message.addField(".", entry.selftext.substring(i, i + MAX_FIELD_LEN), true);
-  }
   channel.send(message);
 }
 
